@@ -4,7 +4,7 @@
 # 3. latitude and depth distribution of the small sizes that were the focus of this paper
 # 4. latitude and depth distribution of different size classes illustrating apparent ontogenetic movement
 
-mydir <- 'c:/SS/Thornyheads/SST_migration_project/'
+mydir <- 'c:/SS/Thornyheads/SST_migration/'
 require(maps)  
 require(mapdata)  
 
@@ -119,11 +119,12 @@ allColorVec <- c(waterColorVec,landColorVec)
 
 
 # make PNG file
-png(file.path(mydir, "figs/SST_Figure1_25May2021.png"),
+png(file.path(mydir, "figs/SST_Figure1_2March022.png"),
     width=9, height=10, units='in', res=300)
 par(mar=c(0,0.5,0.5,1.4), oma = c(4,4,0,0), mfrow = c(1,2))
 
 for(iplot in 1:2){
+  message("starting panel ", iplot, " of 2")
   if(iplot == 1){
     plot(0, type = 'n', xlim=c(650,40), ylim=c(32,49), xaxs='i', yaxs='i',
          axes=FALSE, xlab="", ylab="")
@@ -148,7 +149,7 @@ for(iplot in 1:2){
         fill=TRUE, col='grey',add=TRUE)
     axis(1, seq(-126,-117,2), seq(126,117,-2))
   }
-  box()
+
   # add axes for first panel
   axis2.vec <- c(32,36,40,44,46.25,47,49)
   axis2.text <- c("32","36","40","44","46.25","47","49")
@@ -190,9 +191,11 @@ for(iplot in 1:2){
   samps$yr.col2 <- yr.col.vec2[as.numeric(as.factor(samps$Year))]
 
   if(iplot == 1){
+    message("adding gray points")
     # add points where each haul is located in depth vs. latitude panel
     points(x=catch.small$Depth_m, y=catch.small$Latitude_dd,
            pch = 4, cex = 0.5, col = gray(0, alpha = 0.3))
+    message("adding density points")
     # add points for density of small individuals
     points(x=catch.small$Depth_m, y=catch.small$Latitude_dd,
            bg=rgb(0,1,0,.3), col=rgb(0,1,0,.3), pch=21,
@@ -220,23 +223,31 @@ for(iplot in 1:2){
 
   if(iplot == 2){
     # box to contain legends
-    rect(-121, 42, -100, 50, col = 'white', border = 'black')
-    box()
+    rect(-121, 39.7, -100, 50, col = 'white', border = 'black')
 
     # legend for colors for each year
     legend.text <- c("2011","2012","2013")
     legend(-120.7, 48.5, title="Samples used\nby collection year",
            cex=1, pch=21, bty='n', pt.bg=yr.col.vec, col=yr.col.vec2,
            legend=legend.text)
+
     # legend for haul locations and density
     legend.vec <- c(2,10,50,200)
     legend.text <- c("All hauls", paste0(legend.vec, " / ha"))
     legend.col <- c(gray(0, alpha = 0.3), rep(rgb(0,1,0,.3), 4))
-    legend(-120.5, 45.5, title="Haul locations\n and density of\nsmall individuals",
-           cex=1, pt.cex=c(0.7, 0.4*sqrt(legend.vec)), pch=c(4,21,21,21,21), bty='n',
-           pt.bg=legend.col, col=legend.col,
-           legend=legend.text)
+    legend(-120.5, 45.5, title = "Haul locations\n and density of\nsmall individuals",
+           cex = 1, pt.cex = c(0.7, 0.4*sqrt(legend.vec)), pch = c(4,21,21,21,21), bty = 'n',
+           pt.bg = legend.col, col = legend.col,
+           legend = legend.text)
+
+    # legend for depth scale
+    depths <- c(0, 100, 500, 1000, 2000)
+    legend(-120.3, 42.5, title = "Depth",
+           fill = rev(waterColorVec)[depths+1],
+           legend = paste(depths, "m"),
+           bty = "n")
   }
+  box() 
 } # end loop over iplot %in% 1:2
 
 # close PNG file
